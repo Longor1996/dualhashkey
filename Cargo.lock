@@ -10,7 +10,7 @@ checksum = "32b13ea120a812beba79e34316b3942a857c86ec1593cb34f27bb28272ce2cca"
 
 [[package]]
 name = "dualhashkey"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "const-fnv1a-hash",
 ]

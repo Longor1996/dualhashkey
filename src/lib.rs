@@ -32,6 +32,15 @@ pub struct DualHashKey {
     pub hash: NonZeroU64
 }
 
+/// Hash-implementation: Writes the hash via `write_u64`. That's it.
+/// 
+/// One should use a passthru/nohash-hasher when using the [DualHashKey].
+impl core::hash::Hash for DualHashKey {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        state.write_u64(self.get_hash_raw())
+    }
+}
+
 impl core::fmt::Debug for DualHashKey {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("DualHashKey")

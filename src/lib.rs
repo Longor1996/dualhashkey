@@ -5,6 +5,9 @@
 
 pub use core::num::NonZeroU64;
 
+/// The fnv1a hasher used internally.
+pub use const_fnv1a_hash;
+
 /// Shorthand alias for [DualHashKey].
 pub type DHK = DualHashKey;
 

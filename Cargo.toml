@@ -1,0 +1,18 @@
+[package]
+name = "dualhashkey"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Longor1996 <lalongok@gmail.com>"]
+
+description = "An implementation of a 64-bit Dual-Hash-Key, strongly inspired by the Linux kernels dcache hashes."
+categories = ["no-std", "no-std::no-alloc", "memory-management"]
+keywords = ["no_std"]
+
+readme = "README.md"
+homepage = "https://github.com/Longor1996/dualhashkey"
+repository = "https://github.com/Longor1996/dualhashkey"
+
+[dependencies]
+# The only dependency we need! :D
+const-fnv1a-hash = "1.1.0"

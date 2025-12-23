@@ -8,6 +8,26 @@ pub use core::num::NonZeroU64;
 /// The fnv1a hasher used internally.
 pub use const_fnv1a_hash;
 
+/// A wrapper around [`const_fnv1a_hash::fnv1a_hash_32`]
+/// that returns `0` for empty slices, instead of `811C9DC5`.
+pub const fn fnv1a_hash_32_empty_is_zero(input: &[u8]) -> u32 {
+    if input.is_empty() {
+        0
+    } else {
+        const_fnv1a_hash::fnv1a_hash_32(input, None)
+    }
+}
+
+/// A wrapper around [`const_fnv1a_hash::fnv1a_hash_str_32`]
+/// that returns `0` for empty strings, instead of `811C9DC5`.
+pub const fn fnv1a_hash_str_32_empty_is_zero(input: &str) -> u32 {
+    if input.is_empty() {
+        0
+    } else {
+        const_fnv1a_hash::fnv1a_hash_str_32(input)
+    }
+}
+
 /// Shorthand alias for [DualHashKey].
 pub type DHK = DualHashKey;
 
@@ -81,57 +101,53 @@ impl core::fmt::Display for DualHashKey {
     }
 }
 
-/// Functions/Methods for the dual form of the DHK.
 impl DualHashKey {
     /// Creates a new [DualHashKey] from the pair of high and low sequences of bytes.
     pub const fn from_dual_bytes(high: &[u8], low: &[u8]) -> Option<Self> {
         Self::from_raw_dual(
-            const_fnv1a_hash::fnv1a_hash_32(high, None),
-            const_fnv1a_hash::fnv1a_hash_32(low, None)
+            fnv1a_hash_32_empty_is_zero(high),
+            fnv1a_hash_32_empty_is_zero(low)
         )
     }
     
     /// Creates a new [DualHashKey] from the pair of high and low strings.
     pub const fn from_dual_str(high: &str, low: &str) -> Option<Self> {
         Self::from_raw_dual(
-            const_fnv1a_hash::fnv1a_hash_str_32(high),
-            const_fnv1a_hash::fnv1a_hash_str_32(low)
+            fnv1a_hash_str_32_empty_is_zero(high),
+            fnv1a_hash_str_32_empty_is_zero(low)
         )
     }
     
     /// Creates a new [DualHashKey] from the high sequence of bytes, with the low-half zeroed.
     pub const fn from_high_bytes(high: &[u8]) -> Option<Self> {
-        Self::from_raw_high(const_fnv1a_hash::fnv1a_hash_32(high, None))
+        Self::from_raw_high(fnv1a_hash_32_empty_is_zero(high))
     }
     
     /// Creates a new [DualHashKey] from the high string, with the low-half zeroed.
     pub const fn from_high_str(high: &str) -> Option<Self> {
-        Self::from_raw_high(const_fnv1a_hash::fnv1a_hash_str_32(high))
+        Self::from_raw_high(fnv1a_hash_str_32_empty_is_zero(high))
     }
     
     /// Creates a copy with the high-half replaced.
     pub const fn with_high_half_bytes(&self, high: &[u8]) -> Option<Self> {
-        self.with_high_half_raw(const_fnv1a_hash::fnv1a_hash_32(high, None))
+        self.with_high_half_raw(fnv1a_hash_32_empty_is_zero(high))
     }
     
     /// Creates a copy with the high-half replaced.
     pub const fn with_high_half_str(&self, high: &str) -> Option<Self> {
-        self.with_high_half_raw(const_fnv1a_hash::fnv1a_hash_str_32(high))
+        self.with_high_half_raw(fnv1a_hash_str_32_empty_is_zero(high))
     }
     
     /// Creates a copy with the low-half replaced.
     pub const fn with_low_half_bytes(&self, low: &[u8]) -> Option<Self> {
-        self.with_low_half_raw(const_fnv1a_hash::fnv1a_hash_32(low, None))
+        self.with_low_half_raw(fnv1a_hash_32_empty_is_zero(low))
     }
     
     /// Creates a copy with the low-half replaced.
     pub const fn with_low_half_str(&self, low: &str) -> Option<Self> {
-        self.with_low_half_raw(const_fnv1a_hash::fnv1a_hash_str_32(low))
+        self.with_low_half_raw(fnv1a_hash_str_32_empty_is_zero(low))
     }
-}
-
-/// Functions/Methods for the raw form of the DHK.
-impl DualHashKey {
+    
     /// Safely creates a new [DualHashKey] from two raw [u32] values.
     #[inline(always)]
     pub const fn from_raw_dual(high: u32, low: u32) -> Option<Self> {

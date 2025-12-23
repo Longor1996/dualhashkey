@@ -5,7 +5,9 @@
 
 use core::num::NonZeroU64;
 
-/// The fnv1a hasher used internally.
+#[doc(inline)]
+/// Re-export of the [fnv1a hasher](https://docs.rs/const-fnv1a-hash/) crate.  
+/// Used to construct the [`DualHashKey`] from `&str` and `&[u8]` inputs.
 pub use const_fnv1a_hash;
 
 /// A wrapper around [`const_fnv1a_hash::fnv1a_hash_32`]

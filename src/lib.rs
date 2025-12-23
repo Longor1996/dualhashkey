@@ -224,20 +224,34 @@ impl DualHashKey {
     
     /// Returns the hash with the low-half cleared.
     #[inline(always)]
+    pub const fn get_hash_low_half_min_raw(&self) -> u64 {
+        self.get_hash_raw() & HIGH_MASK
+    }
+    
+    /// Returns the hash with the low-half filled.
+    #[inline(always)]
+    pub const fn get_hash_low_half_max_raw(&self) -> u64 {
+        self.get_hash_raw() | LOW_MASK
+    }
+    
+    /// Returns the hash with the low-half cleared.
+    /// 
+    /// Since this *may* result in an all-zero value, an [`Option<DualHashKey>`] is returned.
+    #[inline(always)]
     pub const fn get_hash_low_half_min(&self) -> Option<Self> {
-        Self::from_raw(self.get_hash_raw() & HIGH_MASK)
+        Self::from_raw(self.get_hash_low_half_min_raw())
     }
     
     /// Returns the hash with the low-half filled.
     /// 
-    /// Since the low-half is filled with bits, making the DHK non-zero, this method cannot fail.
+    /// Since the low-half is filled with bits, making the [`DualHashKey`]s value non-zero, this method can never fail.
     #[inline(always)]
     pub const fn get_hash_low_half_max(&self) -> Self {
         // # Safety
         // The `| U32_MAX` operation *forces* the low-half bits to be set.
         // As such, the raw DHK **cannot** be zero, so no check is needed.
         unsafe {
-            Self::from_raw_unchecked(self.get_hash_raw() | LOW_MASK)
+            Self::from_raw_unchecked(self.get_hash_low_half_max_raw())
         }
     }
 }

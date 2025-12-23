@@ -31,9 +31,19 @@ pub const MAX: DualHashKey = DualHashKey {hash: NonZeroU64::MAX};
 #[cfg(test)]
 mod test;
 
-/// A key made of two hashes, whose raw value is never zero.
+/// A 64-bit key made of two hashes, whose raw value is never zero.
 /// 
-/// Debug-prints as `DualHashKey({HIGH:0>8X}.{LOW:0>8X})`.
+/// The HIGH-half source should be a superset-or-parent of the LOW-half source,  
+/// such that any `ORDEREDMAP<DualHashKey, _>` can be walked in hierarchical order,  
+/// by performing range-queries using the [`Self::get_hash_low_half_min`] and [`Self::get_hash_low_half_max`] functions.
+/// 
+/// For example, passing in `root/mid/low` as HIGH and `root/mid/low/name` as LOW,
+/// results in a dual-hash of `E05F2E55.0CB0216D`.
+/// 
+/// 
+/// Print formats:
+/// - Display: `DualHashKey({HIGH:0>8X}.{LOW:0>8X})`
+/// - Debug: `{HIGH:0>8X}.{LOW:0>8X}`
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(transparent)]
 pub struct DualHashKey {

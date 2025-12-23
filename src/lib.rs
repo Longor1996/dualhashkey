@@ -3,7 +3,7 @@
 //! For use with hierarchical ordered collections,
 //! to quickly find subkeys and permit range queries.
 
-pub use core::num::NonZeroU64;
+use core::num::NonZeroU64;
 
 /// The fnv1a hasher used internally.
 pub use const_fnv1a_hash;
@@ -27,9 +27,6 @@ pub const fn fnv1a_hash_str_32_empty_is_zero(input: &str) -> u32 {
         const_fnv1a_hash::fnv1a_hash_str_32(input)
     }
 }
-
-/// Shorthand alias for [DualHashKey].
-pub type DHK = DualHashKey;
 
 /// A mask for the low-half of a [DualHashKey].
 /// 
@@ -59,7 +56,6 @@ mod test;
 /// 
 /// For example, passing in `root/mid/low` as HIGH and `root/mid/low/name` as LOW,
 /// results in a dual-hash of `E05F2E55.0CB0216D`.
-/// 
 /// 
 /// Print formats:
 /// - Display: `DualHashKey({HIGH:0>8X}.{LOW:0>8X})`

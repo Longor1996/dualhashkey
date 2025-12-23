@@ -163,13 +163,33 @@ impl DualHashKey {
         Self {hash: NonZeroU64::new_unchecked(hash)}
     }
     
+    /// Directly creates a new [DualHashKey] from two raw [u32] values.
+    /// 
+    /// # Safety
+    /// This function is safe to call if-and-only-if *at least one* of the provided values is non-zero.
+    #[inline(always)]
+    pub const unsafe fn from_raw_dual_unchecked(high: u32, low: u32) -> Self {
+        Self::from_raw_unchecked((high as u64) << HIGH_SHIFT | (low as u64))
+    }
+    
     /// Swaps the low and high halfes.
     #[inline(always)]
-    pub const fn swapped(&self) -> Option<Self> {
-        Self::from_raw_dual(
-            self.get_hash_high_half(), 
-            self.get_hash_low_half()
-        )
+    pub const fn swapped(&self) -> Self {
+        // # Safety
+        // This is safe, since at least one of the halves must be non-zero for `self` to exist at all.
+        unsafe {
+            Self::from_raw_dual_unchecked(
+                self.get_hash_low_half(),
+                self.get_hash_high_half()
+            )
+        }
+    }
+    
+    /// Returns a new [`DualHashKey`] with the low-half of the current key as high-half;
+    /// since the low-half may be all-zero, this may return [`None`].
+    #[inline(always)]
+    pub const fn get_low_as_high(&self) -> Option<Self> {
+        Self::from_raw_dual(self.get_hash_low_half(), 0)
     }
     
     /// Creates a copy with the high-half replaced.

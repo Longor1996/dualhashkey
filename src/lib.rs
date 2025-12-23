@@ -28,7 +28,12 @@ pub const MIN: DualHashKey = DualHashKey {hash: NonZeroU64::MIN};
 /// The highest possible [DualHashKey].
 pub const MAX: DualHashKey = DualHashKey {hash: NonZeroU64::MAX};
 
+#[cfg(test)]
+mod test;
+
 /// A key made of two hashes, whose raw value is never zero.
+/// 
+/// Debug-prints as `DualHashKey({HIGH:0>8X}.{LOW:0>8X})`.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(transparent)]
 pub struct DualHashKey {
@@ -46,11 +51,12 @@ impl core::hash::Hash for DualHashKey {
 
 impl core::fmt::Debug for DualHashKey {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("DualHashKey")
-            .field("hash", &self.hash)
-            .field("_high", &self.get_hash_high_half())
-            .field("_low", &self.get_hash_low_half())
-            .finish()
+        f.write_fmt(
+            format_args!("DualHashKey({:0>8X?}.{:0>8X?})",
+                self.get_hash_high_half(),
+                self.get_hash_low_half()
+            )
+        )
     }
 }
 

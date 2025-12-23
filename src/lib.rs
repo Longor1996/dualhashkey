@@ -10,6 +10,12 @@ use core::num::NonZeroU64;
 /// Used to construct the [`DualHashKey`] from `&str` and `&[u8]` inputs.
 pub use const_fnv1a_hash;
 
+#[cfg(feature = "nohash-hasher")]
+#[doc(inline)]
+/// Re-export of the [no-hash hasher](https://docs.rs/nohash-hasher/) crate.  
+/// Used to mark the [`DualHashKey`] as [`nohash_hasher::IsEnabled`].
+pub use nohash_hasher;
+
 /// A wrapper around [`const_fnv1a_hash::fnv1a_hash_32`]
 /// that returns `0` for empty slices, instead of `811C9DC5`.
 pub const fn fnv1a_hash_32_empty_is_zero(input: &[u8]) -> u32 {
@@ -67,6 +73,10 @@ mod test;
 pub struct DualHashKey {
     pub hash: NonZeroU64
 }
+
+#[cfg(feature = "nohash-hasher")]
+/// The DualHashKey is already a hash and must not be hashed again.
+impl nohash_hasher::IsEnabled for DualHashKey {}
 
 /// Hash-implementation: Writes the hash via `write_u64`. That's it.
 /// 

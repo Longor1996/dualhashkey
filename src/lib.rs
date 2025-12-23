@@ -52,6 +52,17 @@ impl core::hash::Hash for DualHashKey {
 impl core::fmt::Debug for DualHashKey {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.write_fmt(
+            format_args!("{:0>8X?}.{:0>8X?}",
+                self.get_hash_high_half(),
+                self.get_hash_low_half()
+            )
+        )
+    }
+}
+
+impl core::fmt::Display for DualHashKey {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.write_fmt(
             format_args!("DualHashKey({:0>8X?}.{:0>8X?})",
                 self.get_hash_high_half(),
                 self.get_hash_low_half()
